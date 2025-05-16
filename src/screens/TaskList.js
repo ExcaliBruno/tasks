@@ -10,6 +10,7 @@ import {
     Alert
 } from 'react-native';
 
+import AsyncStorage from "@react-native-async-storage/async-storage"
 import commonStyles from '../commonStyles';
 import todayImage from '../../assets/imgs/today.jpg'
 
@@ -21,26 +22,27 @@ import 'moment/locale/pt-br'
 import Task from '../components/Task';
 import AddTask from './AddTask';
 
-export default class TaskList extends Component {
-    state = {
+const initialState = { 
         showDoneTasks: true,
         showAddTask: false,
         visibleTasks: [],
-        tasks: [{
-            id: Math.random(),
-            desc: 'Comprar Livro de React Native',
-            estimateAt: new Date(),
-            doneAt: new Date(),
-        }, {
-            id: Math.random(),
-            desc: 'Ler Livro de React Native',
-            estimateAt: new Date(),
-            doneAt: null
-        }]
+        tasks: [] 
     }
 
-    componentDidMount = () => {
-        this.filterTasks()
+export default class TaskList extends Component {
+    state = {
+       ...initialState
+    }
+
+    async componentDidMount() {
+        try {
+            const stateString = await AsyncStorage.getItem('tasksState');
+            const state = JSON.parse(stateString) || initialState;
+            this.setState(state, this.filterTasks);
+        } catch (e) {
+            console.error('Erro ao carregar dados salvos:', e);
+            this.setState({ ...initialState });
+        }
     }
 
     togglefilter = () => {
@@ -60,6 +62,7 @@ export default class TaskList extends Component {
         }
 
         this.setState({visibleTasks})
+        AsyncStorage.setItem('tasksState', JSON.stringify(this.state))
     }
 
     toggleTask = taskId => {
