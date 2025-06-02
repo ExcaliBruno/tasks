@@ -1,13 +1,13 @@
 // index.js
 import React from 'react';
 import { AppRegistry, StyleSheet } from 'react-native';
-import TaskList from './src/screens/TaskList';
+import Auth from './src/screens/Auth';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { name as appName } from './app.json';
 
 const App = () => (
   <GestureHandlerRootView style={styles.container}>
-    <TaskList />
+    <Auth />
   </GestureHandlerRootView>
 );
 
