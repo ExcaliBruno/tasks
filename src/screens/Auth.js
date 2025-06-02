@@ -12,6 +12,7 @@ import {
 
 import backgroundImage from '../../assets/imgs/login.jpg'
 import commonStyles from '../commonStyles'
+import AuthInput from '../components/AuthInput'
 
 export default class Auth extends Component{
 
@@ -40,22 +41,26 @@ export default class Auth extends Component{
                         {this.state.stageNew ? 'crie a sua conta' : 'Informe seus dados'}
                     </Text>
                     {this.state.stageNew &&
-                        <TextInput placeholder='Nome' value={this.state.name}
+                        <AuthInput icon= 'user' placeholder='Nome' 
+                        value={this.state.name}
                         style={styles.input} 
                         onChangeText={name => this.setState({name})}
                     />
 
                     }
-                    <TextInput placeholder='E-mail' value={this.state.email}
+                    <AuthInput icon='at' placeholder='E-mail' 
+                        value={this.state.email}
                         style={styles.input} 
                         onChangeText={email => this.setState({email})}
                     />
-                    <TextInput placeholder='Senha' value={this.state.password}
+                    <AuthInput icon='lock' placeholder='Senha' 
+                        value={this.state.password}
                         style={styles.input} secureTextEntry = {true}
                         onChangeText={password => this.setState({password})}
                     />
                     { this.state.stageNew && 
-                        <TextInput placeholder='Confirme a Senha' 
+                        <AuthInput icon='asterisk' 
+                        placeholder='Confirme a Senha' 
                         value={this.state.confirmPassword}
                         style={styles.input} secureTextEntry = {true}
                         onChangeText={confirmPassword => this.setState({confirmPassword})}
@@ -118,7 +123,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 10,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: 15
     },
     buttonText: {
         fontFamily: commonStyles.fontFamily,
