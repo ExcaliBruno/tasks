@@ -18,21 +18,25 @@ import AuthInput from '../components/AuthInput'
 
 import {server, showError, showSucess} from '../common'
 
+const initialState = {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    stageNew: false
+}
+
 export default class Auth extends Component{
 
     state = {
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        stageNew: false
+        ...initialState
     }
 
     signinOrSignup = () => {
         if(this.state.stageNew){
             this.signup()
         } else {
-            Alert.alert('Sucesso!', 'Logar')
+            this.signin()
         }
     }
 
@@ -46,8 +50,23 @@ export default class Auth extends Component{
             })
 
             showSucess('Usuario cadastrado')
-            this.setState({stageNew:false})
+            this.setState({...initialState})
         } catch(e) {
+            showError(e)
+        }
+    }
+
+    signin =async () => {
+        try {
+            const res = await axios.post(`${server}/signin`, {
+                email: this.state.email,
+                password: this.state.password
+            })
+
+            axios.defaults.headers.common['Authorization'] = `bearer ${res.data.token}`
+            this.props.navigation.navigate('Home')
+
+        } catch(e){
             showError(e)
         }
     }
@@ -61,25 +80,32 @@ export default class Auth extends Component{
                         {this.state.stageNew ? 'crie a sua conta' : 'Informe seus dados'}
                     </Text>
                     {this.state.stageNew &&
-                        <AuthInput icon= 'user' placeholder='Nome' 
+                        <TextInput 
+                        //icon= 'user' 
+                        placeholder='Nome' 
                         value={this.state.name}
                         style={styles.input} 
                         onChangeText={name => this.setState({name})}
                     />
 
                     }
-                    <AuthInput icon='at' placeholder='E-mail' 
+                    <TextInput 
+                        //icon='at' 
+                        placeholder='E-mail' 
                         value={this.state.email}
                         style={styles.input} 
                         onChangeText={email => this.setState({email})}
                     />
-                    <AuthInput icon='lock' placeholder='Senha' 
+                    <TextInput  
+                        //icon='lock' 
+                        placeholder='Senha' 
                         value={this.state.password}
                         style={styles.input} secureTextEntry = {true}
                         onChangeText={password => this.setState({password})}
                     />
                     { this.state.stageNew && 
-                        <AuthInput icon='asterisk' 
+                        <TextInput  
+                        //icon='asterisk' 
                         placeholder='Confirme a Senha' 
                         value={this.state.confirmPassword}
                         style={styles.input} secureTextEntry = {true}
@@ -135,8 +161,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         backgroundColor: '#FFF',
         padding: Platform.OS == 'ios' ? 15 : 10,
-        color: '#000'
-
+        color: '#000',
+        //fontFamily: 'Roboto'
 
     },
     button: {
