@@ -72,6 +72,19 @@ export default class Auth extends Component{
     }
 
     render(){
+
+        const validations = []
+        validations.push(this.state.email && this.state.email.includes('@'))
+        validations.push(this.state.password && this.state.password.length >= 6)
+
+        if(this.state.stageNew){
+            validations.push(this.state.name && this.state.name.trim().length >= 3)
+            validations.push(this.state.confirmPassword)
+            validations.push(this.state.password === this.state.confirmPassword)
+        }
+
+        const validForm = validations.reduce((t, a) => t && a)
+
         return (
             <ImageBackground source={backgroundImage} style={styles.background}>
                 <Text style={styles.title}>Tasks</Text>
@@ -112,8 +125,9 @@ export default class Auth extends Component{
                         onChangeText={confirmPassword => this.setState({confirmPassword})}
                     />
                     }
-                    <TouchableOpacity onPress={this.signinOrSignup}>
-                        <View style={styles.button}>
+                    <TouchableOpacity onPress={this.signinOrSignup}
+                        disabled = {!validForm}>
+                        <View style={[styles.button, validForm? {} :{backgroundColor:'#AAA'} ]}>
                             <Text style={styles.buttonText}>
                                 {this.state.stageNew ? 'Registrar' : 'Entrar'}
                             </Text>
